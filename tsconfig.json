@@ -13,5 +13,11 @@
     "incremental": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true
+  },
+  "watchOptions": {
+    // Using dynamic polling to avoid OS-specific file change watch issue
+    "watchFile": "dynamicPriorityPolling",
+    "watchDirectory": "dynamicPriorityPolling",
+    "excludeDirectories": ["**/node-modules", "dist"]
   }
 }
