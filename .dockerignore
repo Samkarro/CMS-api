@@ -1,0 +1,9 @@
+node_modlues
+test
+.gitignore
+.git
+.prettierrc
+Dockerfile
+*.md
+*.log
+dist

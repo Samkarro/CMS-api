@@ -1,0 +1,12 @@
+services:
+  cms-api-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - '3001:3001'
+    environment:
+      - PORT=3001
+      - NODE_ENV=production
+    volumes:
+      - ./src:/usr/src/app/src
