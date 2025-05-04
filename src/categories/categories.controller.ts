@@ -15,7 +15,7 @@ export class CategoriesController {
     return this.categoriesService.create(categoryName);
   }
 
-  @Delete()
+  @Delete(':id')
   async delete(@Param('id') id: number) {
     return this.categoriesService.delete(id);
   }

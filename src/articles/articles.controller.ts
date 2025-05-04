@@ -20,7 +20,7 @@ export class ArticlesController {
   ) {}
 
   @Get()
-  async list(): Promise<Article[]> {
+  async list() {
     return this.articlesService.list();
   }
 
@@ -30,18 +30,18 @@ export class ArticlesController {
     return this.articlesService.create(body.title, user, body.categories);
   }
 
-  // @Get(':id')
-  // async findByID(@Param('id') id: number): Promise<any> {
-  //   return this.articlesService.findById(id);
-  // }
+  @Get(':id')
+  async findByID(@Param('id') id: number) {
+    return this.articlesService.findById(id);
+  }
 
-  // @Delete(':id')
-  // async delete(@Param('id') id: number): Promise<any> {
-  //   return this.articlesService.delete(id);
-  // }
+  @Delete(':id')
+  async delete(@Param('id') id: number) {
+    return this.articlesService.delete(id);
+  }
 
-  // @Patch(':id')
-  // async update(@Param('id') id: number): Promise<any> {
-  //   return this.articlesService.update(id);
-  // }
+  @Patch(':id')
+  async update(@Body() body, @Param('id') id: number): Promise<any> {
+    return this.articlesService.update(body, id);
+  }
 }

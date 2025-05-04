@@ -5,7 +5,7 @@ import { Article } from './atricles.entity';
 import { User } from 'src/users/users.entity';
 import { Category } from 'src/categories/categories.entity';
 
-@Injectable() // FIXME: Create actual endpoints with database connections
+@Injectable() // FIXME: Add error handling!
 export class ArticlesService {
   constructor(
     @InjectRepository(Article)
@@ -48,23 +48,24 @@ export class ArticlesService {
     return await this.articlesRepository.save(newArticle);
   }
 
-  // findById(id): any {
-  //   try {
-  //     return this.articles[id];
-  //   } catch (err) {
-  //     return err;
-  //   }
-  // }
+  async findById(id): Promise<Article> {
+    try {
+      return this.articlesRepository.findOneBy({ id });
+    } catch (err) {
+      return err;
+    }
+  }
 
-  // delete(id): any {
-  //   try {
-  //     this.articles.splice(id, 1);
-  //   } catch (err) {
-  //     return err;
-  //   }
-  // }
+  async delete(id): Promise<Article> {
+    try {
+      this.articlesRepository.delete(id);
+    } catch (err) {
+      return err;
+    }
+  }
 
-  // update(id): string {
-  //   return `I update by ${id}, I have not yet been created`;
-  // }
+  async update(body, id): Promise<Article> {
+    this.articlesRepository.update(id, body);
+    return this.articlesRepository.findOneBy({ id });
+  }
 }
