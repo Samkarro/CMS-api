@@ -7,10 +7,11 @@ import {
   Patch,
   Post,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { UsersService } from 'src/users/users.service';
-import { Article } from './entities/articles.entity';
+import { AuthGuard } from '../common/guards/auth.guard';
 
 @Controller('articles')
 export class ArticlesController {
@@ -25,6 +26,7 @@ export class ArticlesController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   async create(@Request() req, @Body() body) {
     const user = await this.usersService.findById(req.user.userId);
     return this.articlesService.create(body.title, user, body.categories);
