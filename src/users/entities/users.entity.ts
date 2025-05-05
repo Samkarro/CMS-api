@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsEmail, Length } from 'class-validator';
+import { Article } from 'src/articles/entities/articles.entity';
 
 @Entity('users')
 export class User {
@@ -16,4 +17,7 @@ export class User {
   @Column() // TODO: add length validation
   @Length(6, 50)
   password: string;
+
+  @OneToMany(() => Article, (article) => article.author)
+  articles: Article[];
 }

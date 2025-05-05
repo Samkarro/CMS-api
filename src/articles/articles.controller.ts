@@ -6,37 +6,44 @@ import {
   Param,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { Article } from 'src/common/interfaces/articles.interface';
-import { CreateArticleDto } from 'src/common/dto/create-article.dto';
+import { UsersService } from 'src/users/users.service';
+import { AuthGuard } from '../common/guards/auth.guard';
 
 @Controller('articles')
 export class ArticlesController {
-  constructor(private articlesService: ArticlesService) {}
+  constructor(
+    private usersService: UsersService,
+    private articlesService: ArticlesService,
+  ) {}
 
   @Get()
-  async list(): Promise<Article[]> {
+  async list() {
     return this.articlesService.list();
   }
 
   @Post()
-  async create(@Body() createArticleDto: CreateArticleDto) {
-    return this.articlesService.create(createArticleDto);
+  @UseGuards(AuthGuard)
+  async create(@Request() req, @Body() body) {
+    const user = await this.usersService.findById(req.user.userId);
+    return this.articlesService.create(body.title, user, body.categories);
   }
 
   @Get(':id')
-  async findByID(@Param('id') id: number): Promise<any> {
+  async findByID(@Param('id') id: number) {
     return this.articlesService.findById(id);
   }
 
   @Delete(':id')
-  async delete(@Param('id') id: number): Promise<any> {
+  async delete(@Param('id') id: number) {
     return this.articlesService.delete(id);
   }
 
   @Patch(':id')
-  async update(@Param('id') id: number): Promise<any> {
-    return this.articlesService.update(id);
+  async update(@Body() body, @Param('id') id: number): Promise<any> {
+    return this.articlesService.update(body, id);
   }
 }
