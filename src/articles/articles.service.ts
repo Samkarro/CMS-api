@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from './entities/articles.entity';
@@ -16,10 +16,15 @@ export class ArticlesService {
   ) {}
 
   list() {
-    return this.articlesRepository.find();
+    const articleList = this.articlesRepository.find();
+    if (!articleList) {
+      throw new NotFoundException('No articles found in database');
+    }
+    return articleList;
   }
 
   async create(
+    // TODO: Add re-validation for user, make them log in again
     title: string,
     author: User,
     categoryNames: string[],
@@ -49,14 +54,27 @@ export class ArticlesService {
   }
 
   async findById(id): Promise<Article> {
-    return this.articlesRepository.findOneBy({ id });
+    const article = await this.articlesRepository.findOneBy({ id });
+    if (!article) {
+      throw new NotFoundException('User not found');
+    }
+    return article;
   }
 
   async delete(id) {
+    const article = await this.articlesRepository.findOneBy({ id });
+    if (!article) {
+      throw new NotFoundException('User not found');
+    }
     this.articlesRepository.delete(id);
   }
 
   async update(body, id): Promise<Article> {
+    // TODO: also do it here
+    const article = await this.articlesRepository.findOneBy({ id });
+    if (!article) {
+      throw new NotFoundException('User not found');
+    }
     this.articlesRepository.update(id, body);
     return this.articlesRepository.findOneBy({ id });
   }

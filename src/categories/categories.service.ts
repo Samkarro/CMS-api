@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './entities/categories.entity';
 import { Repository } from 'typeorm';
@@ -10,8 +10,12 @@ export class CategoriesService {
     private categoriesRepostiory: Repository<Category>,
   ) {}
 
-  list() {
-    return this.categoriesRepostiory.find();
+  async list() {
+    const categoryList = await this.categoriesRepostiory.find();
+    if (!categoryList) {
+      throw new NotFoundException('No categories in database');
+    }
+    return categoryList;
   }
 
   create(categoryName: string): Promise<Category> {
@@ -20,6 +24,10 @@ export class CategoriesService {
   }
 
   async delete(id: number): Promise<void> {
+    const category = await this.categoriesRepostiory.findOneBy({ id });
+    if (!category) {
+      throw new NotFoundException('No categories in database');
+    }
     await this.categoriesRepostiory.delete(id);
   }
 }
