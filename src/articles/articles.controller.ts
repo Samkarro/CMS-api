@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { UsersService } from 'src/users/users.service';
-import { Article } from './atricles.entity';
+import { Article } from './entities/articles.entity';
 
 @Controller('articles')
 export class ArticlesController {
