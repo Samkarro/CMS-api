@@ -4,15 +4,15 @@ import {
   ExceptionFilter,
   HttpStatus,
 } from '@nestjs/common';
-//import { Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { QueryFailedError } from 'typeorm';
 
 @Catch(QueryFailedError)
-export class QueryFilter implements ExceptionFilter {
+export class QueryExceptionFilter implements ExceptionFilter {
   catch(exception: QueryFailedError, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
-    const req = ctx.getRequest();
-    const res = ctx.getResponse();
+    const req = ctx.getRequest<Request>();
+    const res = ctx.getResponse<Response>();
 
     const error = exception as any;
     let statusCode = HttpStatus.INTERNAL_SERVER_ERROR;

@@ -8,7 +8,7 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { QueryFilter } from 'src/common/exceptions/queries.exception';
+import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
 
 @Controller('categories')
 export class CategoriesController {
@@ -20,7 +20,7 @@ export class CategoriesController {
   }
 
   @Post()
-  @UseFilters(QueryFilter)
+  @UseFilters(QueryExceptionFilter)
   async create(@Body('categoryName') categoryName: string) {
     return this.categoriesService.create(categoryName);
   }
