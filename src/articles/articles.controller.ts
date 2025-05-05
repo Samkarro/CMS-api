@@ -7,11 +7,13 @@ import {
   Patch,
   Post,
   Request,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { UsersService } from 'src/users/users.service';
 import { AuthGuard } from '../common/guards/auth.guard';
+import { QueryFilter } from 'src/common/exceptions/queries.exception';
 
 @Controller('articles')
 export class ArticlesController {
@@ -27,6 +29,7 @@ export class ArticlesController {
 
   @Post()
   @UseGuards(AuthGuard)
+  @UseFilters(QueryFilter)
   async create(@Request() req, @Body() body) {
     const user = await this.usersService.findById(req.user.userId);
     return this.articlesService.create(body.title, user, body.categories);
@@ -43,6 +46,7 @@ export class ArticlesController {
   }
 
   @Patch(':id')
+  @UseFilters(QueryFilter)
   async update(@Body() body, @Param('id') id: number): Promise<any> {
     return this.articlesService.update(body, id);
   }
