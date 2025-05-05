@@ -5,7 +5,7 @@ import { Article } from './atricles.entity';
 import { User } from 'src/users/users.entity';
 import { Category } from 'src/categories/categories.entity';
 
-@Injectable() // FIXME: Add error handling!
+@Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(Article)
@@ -49,19 +49,11 @@ export class ArticlesService {
   }
 
   async findById(id): Promise<Article> {
-    try {
-      return this.articlesRepository.findOneBy({ id });
-    } catch (err) {
-      return err;
-    }
+    return this.articlesRepository.findOneBy({ id });
   }
 
-  async delete(id): Promise<Article> {
-    try {
-      this.articlesRepository.delete(id);
-    } catch (err) {
-      return err;
-    }
+  async delete(id) {
+    this.articlesRepository.delete(id);
   }
 
   async update(body, id): Promise<Article> {
