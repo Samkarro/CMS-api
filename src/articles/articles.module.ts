@@ -6,8 +6,6 @@ import { Category } from 'src/categories/entities/categories.entity';
 import { Article } from './entities/articles.entity';
 import { User } from 'src/users/entities/users.entity';
 import { UsersModule } from 'src/users/users.module';
-import { AuthGuard } from 'src/common/guards/auth.guard';
-import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthModule } from 'src/auth/auth.module';
 
 @Module({

@@ -1,9 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
+import { AccessToken } from 'src/common/types/AccessToken';
+import { UsersService } from 'src/users/users.service';
+import { RegisterRequestDto } from 'src/common/dtos/register-request.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,37 +19,46 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async register(username: string, email: string, password: string) {
-    const userExists = await this.userRepository.findOneBy({ email });
+  async register(user: RegisterRequestDto): Promise<AccessToken> {
+    const userExists = await this.findOneByEmail(user.email);
     if (userExists) {
       throw new BadRequestException(
         'User already exists. Re-enter valid credentials',
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(user.password, 10);
     const newUser = this.userRepository.create({
-      username,
-      email,
+      username: user.username,
+      email: user.email,
       password: hashedPassword,
     });
 
     await this.userRepository.save(newUser);
-    return { message: 'User registered successfully' };
+    return this.login(newUser);
   }
 
-  async login(email: string, password: string) {
+  async validateUser(email: string, password: string): Promise<User> {
+    const user: User = await this.findOneByEmail(email);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+    const isMatch: boolean = bcrypt.compareSync(password, user.password);
+    if (!isMatch) {
+      throw new BadRequestException('Password does not match');
+    }
+    return user;
+  }
+  async login(user: User): Promise<AccessToken> {
+    const payload = { email: user.email, id: user.id };
+    return { access_token: this.jwtService.sign(payload) };
+  }
+
+  async findOneByEmail(email): Promise<User> {
     const user = await this.userRepository.findOneBy({ email });
     if (!user) {
-      throw new BadRequestException('Invalid credentials');
+      throw new NotFoundException('User not found');
     }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-    if (!isPasswordValid) {
-      throw new BadRequestException('Invalid credentials');
-    }
-
-    const token = this.jwtService.sign({ id: user.id, email: user.email });
-    return { message: 'Login Successful', token };
+    return user;
   }
 }
