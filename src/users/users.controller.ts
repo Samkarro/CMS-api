@@ -10,7 +10,6 @@ import { AuthService } from 'src/auth/auth.service';
 import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
 import { RegisterRequestDto } from 'src/common/dtos/register-request.dto';
 import { RegisterResponseDto } from 'src/common/dtos/register-response.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { LoginResponseDto } from 'src/common/dtos/login-response.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 
@@ -20,7 +19,7 @@ export class UsersController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  @UseFilters(QueryExceptionFilter) // Maybe add badrequestexception to return types? TODO:
+  @UseFilters(QueryExceptionFilter)
   async register(
     @Body() registerBody: RegisterRequestDto,
   ): Promise<RegisterResponseDto> {

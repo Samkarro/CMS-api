@@ -1,15 +1,15 @@
 import {
-  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from './entities/articles.entity';
-import { User } from 'src/users/entities/users.entity';
 import { Category } from 'src/categories/entities/categories.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class ArticlesService {
@@ -19,10 +19,8 @@ export class ArticlesService {
 
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
-
-    @InjectRepository(User)
-    private usersRepository: Repository<User>,
     private authService: AuthService,
+    private readonly i18n: I18nService,
   ) {}
 
   async list(): Promise<Article[]> {
@@ -39,7 +37,11 @@ export class ArticlesService {
       ])
       .getMany();
     if (!articleList) {
-      throw new NotFoundException('No articles found in database');
+      throw new NotFoundException(
+        this.i18n.t('test.ARTICLE.NONE_FOUND', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     return articleList;
   }
@@ -99,7 +101,11 @@ export class ArticlesService {
       .where('article.id = :id', { id })
       .getOne();
     if (!article) {
-      throw new NotFoundException('Article not found');
+      throw new NotFoundException(
+        this.i18n.t('test.ARTICLE.NOT_FOUND', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     return article;
   }
@@ -107,13 +113,16 @@ export class ArticlesService {
   async delete(id) {
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
-      throw new NotFoundException('Article not found');
+      throw new NotFoundException(
+        this.i18n.t('test.ARTICLE.NOT_FOUND', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     this.articlesRepository.delete(id);
   }
 
   async update(body, id): Promise<Article> {
-    // TODO: also do it here
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -130,27 +139,55 @@ export class ArticlesService {
       .getOne();
 
     if (!article) {
-      throw new NotFoundException('Article not found');
+      throw new NotFoundException(
+        this.i18n.t('test.ARTICLE.NOT_FOUND', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     if (!body.user) {
-      throw new ForbiddenException('User not specified');
+      throw new UnauthorizedException(
+        this.i18n.t('test.ARTICLE.UNAUTHORIZED', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     const user = await this.authService.findOneByEmail(body.user.email);
     if (!user) {
-      throw new NotFoundException('Passed user not found');
+      throw new NotFoundException(
+        this.i18n.t('test.ARTICLE.USER_NOT_FOUND', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     if (body.user.email !== user.email) {
-      throw new BadRequestException('Cannot edit user');
+      throw new ForbiddenException(
+        this.i18n.t('test.ARTICLE.CANNOT_EDIT_USER', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     this.authService.validateUser(body.user.email, body.user.password);
 
     const updatedArticle = this.articlesRepository.create({
       ...article,
       ...body,
-      author: user, // Ensure the author is assigned correctly
+      author: user,
     });
 
     await this.articlesRepository.save(updatedArticle);
-    return await this.articlesRepository.findOneBy({ id });
+    return await await this.articlesRepository
+      .createQueryBuilder('article')
+      .leftJoinAndSelect('article.categories', 'category')
+      .leftJoinAndSelect('article.author', 'user')
+      .select([
+        'article.id',
+        'article.title',
+        'article.body',
+        'user.username',
+        'category.categoryName',
+      ])
+      .where('article.id = :id', { id })
+      .getOne();
   }
 }

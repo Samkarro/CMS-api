@@ -1,6 +1,45 @@
 {
   "HELLO": "Hello",
+  "AUTH": {
+    "PASSWORD": "Incorrect password",
+    "USER_EXISTS": "User already exists, please try again"
+  },
   "USER": {
-    "NOT_FOuND": "User not found"
+    "NOT_FOUND": "User not found",
+    "NOT_FOUND_EMAIL": "User with given email not found"
+  },
+  "CATEGORY": {
+    "NONE_FOUND": "No categories in database",
+    "NOT_FOUND": "Category with given id not found"
+  },
+  "ARTICLE": {
+    "NONE_FOUND": "No articles in database",
+    "NOT_FOUND": "Article with given id not found",
+    "USER_NOT_FOUND": "Passed user not found",
+    "UNAUTHORIZED": "User not specified",
+    "CANNOT_EDIT_USER": "Cannot edit user"
+  },
+  "FILTERS": {
+    "QUERIES": {
+      "QUERY_FAIL": "Database query failed",
+      "UNIQUE_FAIL": "Unique constraint violated: ",
+      "FK_FAIL": "Foreign key constraint violated: "
+    },
+    "BAD_REQUEST": {
+      "ERROR": "Bad request",
+      "MESSAGE": "Input data validation failed"
+    },
+    "NOT_FOUND": {
+      "ERROR": "Not found",
+      "MESSAGE": "Resource not found"
+    },
+    "FORBIDDEN": {
+      "ERROR": "Forbidden",
+      "MESSAGE": "Access to this resource is forbidden"
+    },
+    "UNAUTHORIZED": {
+      "ERROR": "Unauthorized",
+      "MESSAGE": "Validation to access to resource failed"
+    }
   }
 }
