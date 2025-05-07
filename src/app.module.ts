@@ -14,6 +14,7 @@ import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './common/guards/jwt.guard';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { ValidationExceptionFilter } from './common/exceptions/validator.exception';
+import { NotFoundExceptionFilter } from './common/exceptions/not-found.exception';
 
 @Module({
   imports: [
@@ -57,6 +58,10 @@ import { ValidationExceptionFilter } from './common/exceptions/validator.excepti
     {
       provide: APP_FILTER,
       useClass: ValidationExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: NotFoundExceptionFilter,
     },
     JwtStrategy,
   ],

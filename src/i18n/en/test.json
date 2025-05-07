@@ -16,6 +16,10 @@
     "BAD_REQUEST": {
       "VAL_FAIL": "Validation failed",
       "INPUT_VAL_FAIL": "Input data validation failed"
+    },
+    "NOT_FOUND": {
+      "RSRC": "Resource not found",
+      "MESSAGE": "Not found"
     }
   }
 }
