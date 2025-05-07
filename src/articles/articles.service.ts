@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { Article } from './entities/articles.entity';
 import { User } from 'src/users/entities/users.entity';
 import { Category } from 'src/categories/entities/categories.entity';
+import { AuthService } from 'src/auth/auth.service';
 
 @Injectable()
 export class ArticlesService {
@@ -13,6 +14,7 @@ export class ArticlesService {
 
     @InjectRepository(Category)
     private categoriesRepository: Repository<Category>,
+    private authService: AuthService,
   ) {}
 
   list() {
@@ -26,7 +28,10 @@ export class ArticlesService {
   async create(
     // TODO: Add re-validation for user, make them log in again
     title: string,
-    author: User,
+    author: {
+      email;
+      password;
+    },
     categoryNames: string[],
   ): Promise<Article> {
     const articleCategories: Category[] = [];
