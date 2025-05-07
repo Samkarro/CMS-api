@@ -8,19 +8,16 @@ import {
   Post,
   Request,
   UseFilters,
-  UseGuards,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
 import { UsersService } from 'src/users/users.service';
-import { AuthGuard } from '../common/guards/auth.guard';
 import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@Public()
 @Controller('articles')
 export class ArticlesController {
-  constructor(
-    private usersService: UsersService,
-    private articlesService: ArticlesService,
-  ) {}
+  constructor(private articlesService: ArticlesService) {}
 
   @Get()
   async list() {
@@ -28,11 +25,14 @@ export class ArticlesController {
   }
 
   @Post()
-  @UseGuards(AuthGuard)
   @UseFilters(QueryExceptionFilter)
-  async create(@Request() req, @Body() body) {
-    const user = await this.usersService.findById(req.user.userId);
-    return this.articlesService.create(body.title, user, body.categories);
+  async create(@Body() body) {
+    return this.articlesService.create(
+      body.title,
+      body.user,
+      body.categories,
+      body.body,
+    );
   }
 
   @Get(':id')

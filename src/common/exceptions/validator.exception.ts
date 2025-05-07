@@ -27,6 +27,8 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       const message = (responseBody as any).message;
       if (Array.isArray(message)) {
         validationErrors = message;
+      } else {
+        validationErrors.push(message);
       }
     }
 

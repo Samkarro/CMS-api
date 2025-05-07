@@ -1,3 +1,6 @@
 {
-  "Hello": "Hello"
+  "HELLO": "Hello",
+  "USER": {
+    "NOT_FOuND": "User not found"
+  }
 }
