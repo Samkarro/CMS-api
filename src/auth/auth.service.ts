@@ -9,7 +9,6 @@ import { User } from 'src/users/entities/users.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { AccessToken } from 'src/common/types/AccessToken';
-import { UsersService } from 'src/users/users.service';
 import { RegisterRequestDto } from 'src/common/dtos/register-request.dto';
 
 @Injectable()
@@ -56,9 +55,6 @@ export class AuthService {
 
   async findOneByEmail(email): Promise<User> {
     const user = await this.userRepository.findOneBy({ email });
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-    return user;
+    return user; // Returns no matter what to be handled outside of the method
   }
 }
