@@ -21,13 +21,13 @@ export class ArticlesController {
 
   @Get()
   async list() {
-    return this.articlesService.list();
+    return await this.articlesService.list();
   }
 
   @Post()
   @UseFilters(QueryExceptionFilter)
   async create(@Body() body) {
-    return this.articlesService.create(
+    return await this.articlesService.create(
       body.title,
       body.user,
       body.categories,
@@ -37,17 +37,17 @@ export class ArticlesController {
 
   @Get(':id')
   async findByID(@Param('id') id: number) {
-    return this.articlesService.findById(id);
+    return await this.articlesService.findById(id);
   }
 
   @Delete(':id')
   async delete(@Param('id') id: number) {
-    return this.articlesService.delete(id);
+    return await this.articlesService.delete(id);
   }
 
   @Patch(':id')
   @UseFilters(QueryExceptionFilter)
   async update(@Body() body, @Param('id') id: number): Promise<any> {
-    return this.articlesService.update(body, id);
+    return await this.articlesService.update(body, id);
   }
 }
