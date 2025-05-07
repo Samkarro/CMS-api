@@ -8,7 +8,7 @@ import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { I18nModule, QueryResolver } from 'nestjs-i18n';
+import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
 import { APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './common/guards/jwt.guard';
@@ -41,7 +41,10 @@ import { JwtStrategy } from './auth/jwt.strategy';
         },
         //      typesOutputPath: join(__dirname, '../src/generated/i18n.generated.ts'),
       }),
-      resolvers: [new QueryResolver(['en', 'ka'])],
+      resolvers: [
+        { use: QueryResolver, options: ['lang'] },
+        AcceptLanguageResolver,
+      ],
     }),
   ],
   controllers: [AppController], // ste
