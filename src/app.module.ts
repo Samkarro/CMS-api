@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ForbiddenException,
   Module,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -19,11 +20,14 @@ import { JwtGuard } from './common/guards/jwt.guard';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { ValidationExceptionFilter } from './common/exceptions/validator.exception';
 import { NotFoundExceptionFilter } from './common/exceptions/not-found.exception';
+import { QueryExceptionFilter } from './common/exceptions/queries.exception';
+import { UnauthorizedExceptionFilter } from './common/exceptions/unauthorized.exception';
+import { ForbiddenExceptionFilter } from './common/exceptions/forbidden.exception';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    AuthModule, // test
+    AuthModule,
     ArticlesModule,
     CategoriesModule,
     UsersModule,
@@ -69,11 +73,15 @@ import { NotFoundExceptionFilter } from './common/exceptions/not-found.exception
     },
     {
       provide: APP_FILTER,
-      useClass: BadRequestException,
+      useClass: ForbiddenExceptionFilter,
     },
     {
       provide: APP_FILTER,
-      useClass: ForbiddenException,
+      useClass: UnauthorizedExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: QueryExceptionFilter,
     },
     JwtStrategy,
   ],

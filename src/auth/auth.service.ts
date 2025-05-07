@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -44,7 +45,7 @@ export class AuthService {
     }
     const isMatch: boolean = bcrypt.compareSync(password, user.password);
     if (!isMatch) {
-      throw new BadRequestException('Password does not match');
+      throw new UnauthorizedException('Password does not match');
     }
     return user;
   }
