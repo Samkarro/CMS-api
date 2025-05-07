@@ -5,6 +5,7 @@ import { Article } from './entities/articles.entity';
 import { User } from 'src/users/entities/users.entity';
 import { Category } from 'src/categories/entities/categories.entity';
 import { AuthService } from 'src/auth/auth.service';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class ArticlesService {
@@ -26,33 +27,40 @@ export class ArticlesService {
   }
 
   async create(
-    // TODO: Add re-validation for user, make them log in again
     title: string,
     author: {
-      email;
-      password;
+      email: string;
+      password: string;
     },
     categoryNames: string[],
+    body,
   ): Promise<Article> {
     const articleCategories: Category[] = [];
 
-    for (const name of categoryNames) {
-      let category = await this.categoriesRepository.findOneBy({
-        categoryName: name,
-      });
+    if (categoryNames) {
+      for (const name of categoryNames) {
+        let category = await this.categoriesRepository.findOneBy({
+          categoryName: name,
+        });
 
-      if (!category) {
-        category = this.categoriesRepository.create({ categoryName: name });
-        await this.categoriesRepository.save(category);
+        if (!category) {
+          category = this.categoriesRepository.create({ categoryName: name });
+          await this.categoriesRepository.save(category);
+        }
+
+        articleCategories.push(category);
       }
-
-      articleCategories.push(category);
     }
+    const validAuthor = await this.authService.validateUser(
+      author.email,
+      author.password,
+    );
 
     const newArticle = this.articlesRepository.create({
       title,
-      author,
+      author: validAuthor,
       categories: articleCategories,
+      body,
     });
 
     return await this.articlesRepository.save(newArticle);
@@ -61,7 +69,7 @@ export class ArticlesService {
   async findById(id): Promise<Article> {
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Article not found');
     }
     return article;
   }
@@ -69,7 +77,7 @@ export class ArticlesService {
   async delete(id) {
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Article not found');
     }
     this.articlesRepository.delete(id);
   }
@@ -78,7 +86,7 @@ export class ArticlesService {
     // TODO: also do it here
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
-      throw new NotFoundException('User not found');
+      throw new NotFoundException('Article not found');
     }
     this.articlesRepository.update(id, body);
     return this.articlesRepository.findOneBy({ id });

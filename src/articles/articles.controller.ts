@@ -17,10 +17,7 @@ import { Public } from 'src/common/decorators/public.decorator';
 @Public()
 @Controller('articles')
 export class ArticlesController {
-  constructor(
-    private usersService: UsersService,
-    private articlesService: ArticlesService,
-  ) {}
+  constructor(private articlesService: ArticlesService) {}
 
   @Get()
   async list() {
@@ -29,9 +26,13 @@ export class ArticlesController {
 
   @Post()
   @UseFilters(QueryExceptionFilter)
-  async create(@Request() req, @Body() body) {
-    const user = await this.usersService.findOneByEmail(req.user.email);
-    return this.articlesService.create(body.title, user, body.categories);
+  async create(@Body() body) {
+    return this.articlesService.create(
+      body.title,
+      body.user,
+      body.categories,
+      body.body,
+    );
   }
 
   @Get(':id')

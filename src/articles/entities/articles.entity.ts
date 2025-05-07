@@ -26,4 +26,8 @@ export class Article {
   @ManyToMany(() => Category)
   @JoinTable()
   categories: Category[];
+
+  @Column()
+  @IsNotEmpty()
+  body: string;
 }
