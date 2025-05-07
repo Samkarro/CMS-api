@@ -6,11 +6,18 @@
   },
   "USER": {
     "NOT_FOUND": "User not found",
-    "NOT_FOUND_EMAIL": "User with provided email not found"
+    "NOT_FOUND_EMAIL": "User with given email not found"
   },
   "CATEGORY": {
     "NONE_FOUND": "No categories in database",
-    "NOT_FOUND": "Category with passsed id not found"
+    "NOT_FOUND": "Category with given id not found"
+  },
+  "ARTICLE": {
+    "NONE_FOUND": "No articles in database",
+    "NOT_FOUND": "Article with given id not found",
+    "USER_NOT_FOUND": "Passed user not found",
+    "UNAUTHORIZED": "User not specified",
+    "CANNOT_EDIT_USER": "Cannot edit user"
   },
   "FILTERS": {
     "QUERIES": {
