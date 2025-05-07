@@ -14,12 +14,16 @@
       "FK_FAIL": "Foreign key constraint violated: "
     },
     "BAD_REQUEST": {
-      "VAL_FAIL": "Validation failed",
-      "INPUT_VAL_FAIL": "Input data validation failed"
+      "ERROR": "Bad request",
+      "MESSAGE": "Input data validation failed"
     },
     "NOT_FOUND": {
-      "RSRC": "Resource not found",
-      "MESSAGE": "Not found"
+      "ERROR": "Not found",
+      "MESSAGE": "Resource not found"
+    },
+    "FORBIDDEN": {
+      "ERROR": "Forbidden",
+      "MESSAGE": "Access to this resource is forbidden"
     }
   }
 }

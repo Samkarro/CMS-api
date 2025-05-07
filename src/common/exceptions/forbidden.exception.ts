@@ -2,27 +2,27 @@ import {
   ExceptionFilter,
   Catch,
   ArgumentsHost,
-  NotFoundException,
+  ForbiddenException,
   HttpStatus,
 } from '@nestjs/common';
 import { Response } from 'express';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 
-@Catch(NotFoundException)
-export class NotFoundExceptionFilter implements ExceptionFilter {
+@Catch(ForbiddenException)
+export class ForbiddenExceptionFilter implements ExceptionFilter {
   constructor(private readonly i18n: I18nService) {}
-  catch(exception: NotFoundException, host: ArgumentsHost) {
+  catch(exception: ForbiddenException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
 
-    const status = exception.getStatus?.() ?? HttpStatus.NOT_FOUND;
+    const status = exception.getStatus?.() ?? HttpStatus.FORBIDDEN;
     const responseBody = exception.getResponse?.();
 
     const message =
       typeof responseBody === 'object' && responseBody !== null
         ? (responseBody as any).message
-        : this.i18n.t('test.FILTERS.NOT_FOUND.MESSAGE', {
+        : this.i18n.t('test.FILTERS.FORBIDDEN.MESSAGE', {
             lang: I18nContext.current().lang,
           });
 
@@ -30,7 +30,7 @@ export class NotFoundExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: request.url,
-      error: this.i18n.t('test.FILTERS.NOT_FOUND.ERROR', {
+      error: this.i18n.t('test.FILTERS.FORBIDDEN.ERROR', {
         lang: I18nContext.current().lang,
       }),
       message,

@@ -1,4 +1,8 @@
-import { Module } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Module,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -62,6 +66,14 @@ import { NotFoundExceptionFilter } from './common/exceptions/not-found.exception
     {
       provide: APP_FILTER,
       useClass: NotFoundExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: BadRequestException,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ForbiddenException,
     },
     JwtStrategy,
   ],

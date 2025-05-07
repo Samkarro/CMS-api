@@ -38,10 +38,10 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: req.url,
-      error: this.i18n.t('test.FILTERS.BAD_REQUEST.VAL_FAIL', {
+      error: this.i18n.t('test.FILTERS.BAD_REQUEST.ERROR', {
         lang: I18nContext.current().lang,
       }),
-      message: this.i18n.t('test.FILTERS.BAD_REQUEST.INPUT_VAL_FAIL', {
+      message: this.i18n.t('test.FILTERS.BAD_REQUEST.MESSAGE', {
         lang: I18nContext.current().lang,
       }),
       details: validationErrors,
