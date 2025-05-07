@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 import { Category } from 'src/categories/entities/categories.entity';
 import { User } from 'src/users/entities/users.entity';
@@ -15,6 +16,10 @@ export class Article {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty({
+    example: 'Euleruan Principles',
+    required: true,
+  })
   @Column()
   @IsNotEmpty()
   title: string;
