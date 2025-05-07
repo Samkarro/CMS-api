@@ -2,5 +2,16 @@
   "HELLO": "Hello",
   "USER": {
     "NOT_FOuND": "User not found"
+  },
+  "CATEGORY": {
+    "NONE_FOUND": "No categories in database",
+    "NOT_FOUND": "Category with passsed id not found"
+  },
+  "FILTERS": {
+    "QUERIES": {
+      "QUERY_FAIL": "Database query failed",
+      "UNIQUE_FAIL": "Unique constraint violated: ",
+      "FK_FAIL": "Foreign key constraint violated: "
+    }
   }
 }

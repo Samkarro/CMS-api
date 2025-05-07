@@ -39,7 +39,6 @@ import { JwtStrategy } from './auth/jwt.strategy';
           path: join(__dirname, '../src/i18n/'),
           watch: true,
         },
-        //      typesOutputPath: join(__dirname, '../src/generated/i18n.generated.ts'),
       }),
       resolvers: [
         { use: QueryResolver, options: ['lang'] },
@@ -47,7 +46,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
       ],
     }),
   ],
-  controllers: [AppController], // ste
+  controllers: [AppController],
   providers: [
     AppService,
     {
