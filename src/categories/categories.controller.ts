@@ -1,14 +1,5 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  UseFilters,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { CreateCategoryDto } from 'src/common/dtos/resources/categories/CreateCategoryDto.dto';
