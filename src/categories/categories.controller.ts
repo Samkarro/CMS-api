@@ -22,7 +22,6 @@ export class CategoriesController {
   }
 
   @Post()
-  @UseFilters(QueryExceptionFilter)
   async create(@Body('categoryName') categoryName: string) {
     return this.categoriesService.create(categoryName);
   }

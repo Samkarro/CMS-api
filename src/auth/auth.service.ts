@@ -11,19 +11,23 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
 import { AccessToken } from 'src/common/types/AccessToken';
 import { RegisterRequestDto } from 'src/common/dtos/register-request.dto';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
     private jwtService: JwtService,
+    private readonly i18n: I18nService,
   ) {}
 
   async register(user: RegisterRequestDto): Promise<AccessToken> {
     const userExists = await this.findOneByEmail(user.email);
     if (userExists) {
       throw new BadRequestException(
-        'User already exists. Re-enter valid credentials',
+        this.i18n.t('test.AUTH.USER_EXISTS', {
+          lang: I18nContext.current().lang,
+        }),
       );
     }
 
@@ -41,11 +45,19 @@ export class AuthService {
   async validateUser(email: string, password: string): Promise<User> {
     const user: User = await this.findOneByEmail(email);
     if (!user) {
-      throw new BadRequestException('User not found');
+      throw new NotFoundException(
+        this.i18n.t('test.USER.NOT_FOUND_EMAIL', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     const isMatch: boolean = bcrypt.compareSync(password, user.password);
     if (!isMatch) {
-      throw new UnauthorizedException('Password does not match');
+      throw new UnauthorizedException(
+        this.i18n.t('test.AUTH.PASSWORD', {
+          lang: I18nContext.current().lang,
+        }),
+      );
     }
     return user;
   }

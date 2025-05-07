@@ -1,7 +1,12 @@
 {
   "HELLO": "Hello",
+  "AUTH": {
+    "PASSWORD": "Incorrect password",
+    "USER_EXISTS": "User already exists, please try again"
+  },
   "USER": {
-    "NOT_FOUND": "User not found"
+    "NOT_FOUND": "User not found",
+    "NOT_FOUND_EMAIL": "User with provided email not found"
   },
   "CATEGORY": {
     "NONE_FOUND": "No categories in database",
