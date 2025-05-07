@@ -10,10 +10,13 @@ import { DataSource } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtGuard } from './common/guards/jwt.guard';
+import { JwtStrategy } from './auth/jwt.strategy';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule, // test
     ArticlesModule,
     CategoriesModule,
@@ -42,7 +45,14 @@ import { join } from 'path';
     }),
   ],
   controllers: [AppController], // ste
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: JwtGuard,
+    },
+    JwtStrategy,
+  ],
 })
 export class AppModule {
   constructor(private dataSource: DataSource) {}

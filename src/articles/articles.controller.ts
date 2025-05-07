@@ -12,7 +12,9 @@ import {
 import { ArticlesService } from './articles.service';
 import { UsersService } from 'src/users/users.service';
 import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@Public()
 @Controller('articles')
 export class ArticlesController {
   constructor(

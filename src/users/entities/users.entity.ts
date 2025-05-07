@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { IsEmail, Length } from 'class-validator';
+import { IsEmail, IsNotEmpty, Length } from 'class-validator';
 import { Article } from 'src/articles/entities/articles.entity';
 
 @Entity('users')
@@ -8,14 +8,17 @@ export class User {
   id: number;
 
   @Column({ unique: true })
+  @IsNotEmpty()
   username: string;
 
-  @Column({ unique: true }) // TODO: add email validation
+  @Column({ unique: true })
   @IsEmail()
+  @IsNotEmpty()
   email: string;
 
-  @Column() // TODO: add length validation
+  @Column()
   @Length(6, 50)
+  @IsNotEmpty()
   password: string;
 
   @OneToMany(() => Article, (article) => article.author)

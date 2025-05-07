@@ -12,7 +12,9 @@ import { RegisterRequestDto } from 'src/common/dtos/register-request.dto';
 import { RegisterResponseDto } from 'src/common/dtos/register-response.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { LoginResponseDto } from 'src/common/dtos/login-response.dto';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@Public()
 @Controller('users')
 export class UsersController {
   constructor(private readonly authService: AuthService) {}

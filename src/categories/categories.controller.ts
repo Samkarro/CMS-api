@@ -9,7 +9,9 @@ import {
 } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@Public()
 @Controller('categories')
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
