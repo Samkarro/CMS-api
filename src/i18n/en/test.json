@@ -1,7 +1,7 @@
 {
   "HELLO": "Hello",
   "USER": {
-    "NOT_FOuND": "User not found"
+    "NOT_FOUND": "User not found"
   },
   "CATEGORY": {
     "NONE_FOUND": "No categories in database",
@@ -24,6 +24,10 @@
     "FORBIDDEN": {
       "ERROR": "Forbidden",
       "MESSAGE": "Access to this resource is forbidden"
+    },
+    "UNAUTHORIZED": {
+      "ERROR": "Unauthorized",
+      "MESSAGE": "Validation to access to resource failed"
     }
   }
 }

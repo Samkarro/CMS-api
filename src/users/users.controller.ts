@@ -20,7 +20,7 @@ export class UsersController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  @UseFilters(QueryExceptionFilter) // Maybe add badrequestexception to return types? TODO:
+  @UseFilters(QueryExceptionFilter)
   async register(
     @Body() registerBody: RegisterRequestDto,
   ): Promise<RegisterResponseDto> {
