@@ -10,9 +10,10 @@ import { DataSource } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import { join } from 'path';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtGuard } from './common/guards/jwt.guard';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { ValidationExceptionFilter } from './common/exceptions/validator.exception';
 
 @Module({
   imports: [
@@ -52,6 +53,10 @@ import { JwtStrategy } from './auth/jwt.strategy';
     {
       provide: APP_GUARD,
       useClass: JwtGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ValidationExceptionFilter,
     },
     JwtStrategy,
   ],

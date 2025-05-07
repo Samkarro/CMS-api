@@ -12,6 +12,10 @@
       "QUERY_FAIL": "Database query failed",
       "UNIQUE_FAIL": "Unique constraint violated: ",
       "FK_FAIL": "Foreign key constraint violated: "
+    },
+    "BAD_REQUEST": {
+      "VAL_FAIL": "Validation failed",
+      "INPUT_VAL_FAIL": "Input data validation failed"
     }
   }
 }

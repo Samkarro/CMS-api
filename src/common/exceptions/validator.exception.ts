@@ -6,9 +6,11 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
+  constructor(private readonly i18n: I18nService) {}
   catch(exception: BadRequestException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse<Response>();
@@ -36,8 +38,12 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: req.url,
-      error: 'Validation Failed',
-      message: 'Input data validation failed',
+      error: this.i18n.t('test.FILTERS.BAD_REQUEST.VAL_FAIL', {
+        lang: I18nContext.current().lang,
+      }),
+      message: this.i18n.t('test.FILTERS.BAD_REQUEST.INPUT_VAL_FAIL', {
+        lang: I18nContext.current().lang,
+      }),
       details: validationErrors,
     });
   }
