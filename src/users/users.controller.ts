@@ -16,7 +16,7 @@ export class UsersController {
   @Post('register')
   @ApiResponse({
     status: 201,
-    description: 'User has been created and its new ',
+    description: "User created and its new JWT token's returned",
   })
   @ApiResponse({ status: 400, description: 'Bad request, user already exists' })
   @ApiResponse({
@@ -25,7 +25,8 @@ export class UsersController {
   })
   @ApiBody({
     type: RegisterUserApiDto,
-    description: 'Json structure for registration',
+    description:
+      'Registering a user requires all the same things. A unique username, unique email and a password with at least 6 and at most 50 characters.',
   })
   async register(
     @Body() registerBody: RegisterRequestDto,
@@ -45,7 +46,7 @@ export class UsersController {
   })
   @ApiBody({
     type: LoginUserApiDto,
-    description: 'Json structure for login',
+    description: 'Logging in only requires an existing email and password.',
   })
   async login(@Request() req): Promise<LoginResponseDto> {
     return this.authService.login(req.body.user);
