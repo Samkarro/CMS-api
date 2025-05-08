@@ -1,5 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ArticlesService } from './articles.service';
+import { getRepositoryToken } from '@nestjs/typeorm';
+import { Article } from './entities/articles.entity';
+import { Category } from '../categories/entities/categories.entity';
+import { I18nService } from 'nestjs-i18n';
+import { AuthService } from '../auth/auth.service';
 
 describe('ArticlesService', () => {
   let service: ArticlesService;
@@ -32,7 +37,25 @@ describe('ArticlesService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ArticlesService],
+      providers: [
+        ArticlesService,
+        {
+          provide: getRepositoryToken(Article),
+          useValue: mockArticlesRepository,
+        },
+        {
+          provide: getRepositoryToken(Category),
+          useValue: mockCategoriesRepository,
+        },
+        {
+          provide: I18nService,
+          useValue: mockI18nService,
+        },
+        {
+          provide: AuthService,
+          useValue: mockAuthService,
+        },
+      ],
     }).compile();
 
     service = module.get<ArticlesService>(ArticlesService);
