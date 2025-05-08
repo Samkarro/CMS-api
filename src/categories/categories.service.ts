@@ -8,16 +8,16 @@ import { I18nContext, I18nService } from 'nestjs-i18n';
 export class CategoriesService {
   constructor(
     @InjectRepository(Category)
-    private categoriesRepostiory: Repository<Category>,
+    private categoriesRepository: Repository<Category>,
     private readonly i18n: I18nService,
   ) {}
 
-  async list() {
-    const categoryList = await this.categoriesRepostiory.find();
+  async list(lang: string) {
+    const categoryList = await this.categoriesRepository.find();
     if (!categoryList) {
       throw new NotFoundException(
         this.i18n.t('test.CATEGORY.NONE_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
@@ -25,19 +25,19 @@ export class CategoriesService {
   }
 
   create(categoryName: string): Promise<Category> {
-    const newCategory = this.categoriesRepostiory.create({ categoryName });
-    return this.categoriesRepostiory.save(newCategory);
+    const newCategory = this.categoriesRepository.create({ categoryName });
+    return this.categoriesRepository.save(newCategory);
   }
 
-  async delete(id: number): Promise<void> {
-    const category = await this.categoriesRepostiory.findOneBy({ id });
+  async delete(id: number, lang?: string): Promise<void> {
+    const category = await this.categoriesRepository.findOneBy({ id });
     if (!category) {
       throw new NotFoundException(
-        this.i18n.t('test.CATEGORY.NOT_FOUND', {
-          lang: I18nContext.current().lang,
+        this.i18n.t('test.CATEGORY.NOT_FOUND  ', {
+          lang,
         }),
       );
     }
-    await this.categoriesRepostiory.delete(id);
+    await this.categoriesRepository.delete(id);
   }
 }

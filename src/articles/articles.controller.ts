@@ -12,8 +12,8 @@ import { ArticlesService } from './articles.service';
 import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { CreateArticleDto } from 'src/common/dtos/resources/articles/CreateArticleDto.dto';
-import { UpdateArticleDto } from 'src/common/dtos/resources/articles/UpdateArticleDto.dto';
+import { CreateArticleDto } from 'src/common/dtos/resources/articles/swagger/CreateArticleDto.dto';
+import { UpdateArticleDto } from 'src/common/dtos/resources/articles/swagger/UpdateArticleDto.dto';
 
 @Public()
 @Controller('articles')
