@@ -1,8 +1,10 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { Public } from 'src/common/decorators/public.decorator';
+import { Public } from '../common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { CreateCategoryDto } from 'src/common/dtos/resources/categories/CreateCategoryDto.dto';
+import { CreateCategoryApiDto } from '../common/dtos/resources/categories/swagger/CreateCategoryApiDto.dto';
+import { Category } from './entities/categories.entity';
+import { I18nLang } from 'nestjs-i18n';
 
 @Public()
 @Controller('categories')
@@ -15,8 +17,8 @@ export class CategoriesController {
     description: 'Not found, no categories in database.',
   })
   @Get()
-  async list() {
-    return this.categoriesService.list();
+  async list(@I18nLang() lang: string): Promise<Category[]> {
+    return this.categoriesService.list(lang);
   }
 
   @ApiResponse({ status: 201, description: 'Created new category.' })
@@ -29,7 +31,7 @@ export class CategoriesController {
     description: 'Internal server error. Database query failed.',
   })
   @ApiBody({
-    type: CreateCategoryDto,
+    type: CreateCategoryApiDto,
     description:
       'Creating a category requires only the categoryName to be passed in the JSON, as the object only has that and the auto-incrementing id.',
   })
@@ -44,7 +46,7 @@ export class CategoriesController {
     description: "Not found, couldn't find category with given id in database",
   })
   @Delete(':id')
-  async delete(@Param('id') id: number) {
-    return this.categoriesService.delete(id);
+  async delete(@Param('id') id: number, @I18nLang() lang: string) {
+    return this.categoriesService.delete(id, lang);
   }
 }

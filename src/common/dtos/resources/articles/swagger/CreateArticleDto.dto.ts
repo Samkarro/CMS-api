@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateArticleDto {
+export class CreateArticleApiDto {
   @ApiProperty({
     example: 'Is Pineapple on Pizza Slowly Entering the Mainsteam?',
     required: true,

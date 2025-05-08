@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { IsEmail, IsNotEmpty, Length } from 'class-validator';
-import { Article } from 'src/articles/entities/articles.entity';
+import { Article } from '../../articles/entities/articles.entity';
 
 @Entity('users')
 export class User {

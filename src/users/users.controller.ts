@@ -1,12 +1,13 @@
 import { Body, Controller, Post, Request } from '@nestjs/common';
-import { AuthService } from 'src/auth/auth.service';
-import { RegisterRequestDto } from 'src/common/dtos/register-request.dto';
-import { RegisterResponseDto } from 'src/common/dtos/register-response.dto';
-import { LoginResponseDto } from 'src/common/dtos/login-response.dto';
-import { Public } from 'src/common/decorators/public.decorator';
+import { AuthService } from '../auth/auth.service';
+import { RegisterRequestDto } from '../common/dtos/register-request.dto';
+import { RegisterResponseDto } from '../common/dtos/register-response.dto';
+import { LoginResponseDto } from '../common/dtos/login-response.dto';
+import { Public } from '../common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { RegisterUserApiDto } from 'src/common/dtos/resources/users/RegisterUserDto.dto';
-import { LoginUserApiDto } from 'src/common/dtos/resources/users/LoginUserApiDto.dto';
+import { RegisterUserApiDto } from '../common/dtos/resources/users/swagger/RegisterUserDto.dto';
+import { LoginUserApiDto } from '../common/dtos/resources/users/swagger/LoginUserApiDto.dto';
+import { I18nLang } from 'nestjs-i18n';
 
 @Public()
 @Controller('users')
@@ -30,8 +31,9 @@ export class UsersController {
   })
   async register(
     @Body() registerBody: RegisterRequestDto,
+    @I18nLang() lang: string,
   ): Promise<RegisterResponseDto> {
-    return this.authService.register(registerBody);
+    return this.authService.register(registerBody, lang);
   }
 
   @Post('login')
@@ -48,7 +50,10 @@ export class UsersController {
     type: LoginUserApiDto,
     description: 'Logging in only requires an existing email and password.',
   })
-  async login(@Request() req): Promise<LoginResponseDto> {
-    return this.authService.login(req.body.user);
+  async login(
+    @Request() req,
+    @I18nLang() lang: string,
+  ): Promise<LoginResponseDto> {
+    return this.authService.login(req.body.user, lang);
   }
 }

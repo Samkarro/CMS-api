@@ -7,8 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from './entities/articles.entity';
-import { Category } from 'src/categories/entities/categories.entity';
-import { AuthService } from 'src/auth/auth.service';
+import { Category } from '../categories/entities/categories.entity';
+import { AuthService } from '../auth/auth.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class ArticlesService {
     private readonly i18n: I18nService,
   ) {}
 
-  async list(): Promise<Article[]> {
+  async list(lang: string): Promise<Article[]> {
     const articleList = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -39,7 +39,7 @@ export class ArticlesService {
     if (!articleList) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NONE_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
@@ -54,6 +54,7 @@ export class ArticlesService {
     },
     categoryNames: string[],
     body,
+    lang: string,
   ): Promise<Article> {
     const articleCategories: Category[] = [];
 
@@ -74,6 +75,7 @@ export class ArticlesService {
     const validAuthor = await this.authService.validateUser(
       author.email,
       author.password,
+      lang,
     );
 
     const newArticle = this.articlesRepository.create({
@@ -86,7 +88,7 @@ export class ArticlesService {
     return await this.articlesRepository.save(newArticle);
   }
 
-  async findById(id): Promise<Article> {
+  async findById(id, lang): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -103,26 +105,26 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NOT_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
     return article;
   }
 
-  async delete(id) {
+  async delete(id, lang) {
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NOT_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
     this.articlesRepository.delete(id);
   }
 
-  async update(body, id): Promise<Article> {
+  async update(body, id, lang): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -167,7 +169,7 @@ export class ArticlesService {
         }),
       );
     }
-    this.authService.validateUser(body.user.email, body.user.password);
+    this.authService.validateUser(body.user.email, body.user.password, lang);
 
     const updatedArticle = this.articlesRepository.create({
       ...article,
