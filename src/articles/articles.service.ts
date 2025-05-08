@@ -54,6 +54,7 @@ export class ArticlesService {
     },
     categoryNames: string[],
     body,
+    lang: string,
   ): Promise<Article> {
     const articleCategories: Category[] = [];
 
@@ -74,6 +75,7 @@ export class ArticlesService {
     const validAuthor = await this.authService.validateUser(
       author.email,
       author.password,
+      lang,
     );
 
     const newArticle = this.articlesRepository.create({
@@ -122,7 +124,7 @@ export class ArticlesService {
     this.articlesRepository.delete(id);
   }
 
-  async update(body, id): Promise<Article> {
+  async update(body, id, lang): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -167,7 +169,7 @@ export class ArticlesService {
         }),
       );
     }
-    this.authService.validateUser(body.user.email, body.user.password);
+    this.authService.validateUser(body.user.email, body.user.password, lang);
 
     const updatedArticle = this.articlesRepository.create({
       ...article,

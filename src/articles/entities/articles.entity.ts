@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
-import { Category } from 'src/categories/entities/categories.entity';
-import { User } from 'src/users/entities/users.entity';
+import { Category } from '../../categories/entities/categories.entity';
+import { User } from '../../users/entities/users.entity';
 import {
   Column,
   Entity,

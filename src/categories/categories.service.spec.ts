@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CategoriesService } from './categories.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Category } from './entities/categories.entity';
-import { CreateCategoryDto } from 'src/common/dtos/resources/categories/CreateCategoryDto.dto';
-import { I18nContext, I18nService } from 'nestjs-i18n';
+import { CreateCategoryDto } from '../common/dtos/resources/categories/CreateCategoryDto.dto';
+import { I18nService } from 'nestjs-i18n';
 
 describe('CategoriesService', () => {
   let service: CategoriesService;
