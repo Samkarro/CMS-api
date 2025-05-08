@@ -30,8 +30,8 @@ export class ArticlesController {
     status: 404,
     description: 'Not found, no articles in database.',
   })
-  async list() {
-    return await this.articlesService.list();
+  async list(@I18nLang() lang: string) {
+    return await this.articlesService.list(lang);
   }
 
   @Post()

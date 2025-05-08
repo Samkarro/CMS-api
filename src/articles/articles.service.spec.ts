@@ -64,4 +64,29 @@ describe('ArticlesService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  it('list => Returns all articles as an array', async () => {
+    const article = {
+      id: Date.now(),
+      title: 'Pineapple on Pizza',
+      author: {
+        username: 'John Marinade',
+      },
+      categories: ['Politics'],
+      body: 'Thorough description of why some consider it an abomination',
+    };
+    const articles = [article];
+    const createQueryBuilder: any = {
+      select: () => createQueryBuilder,
+      leftJoinAndSelect: () => createQueryBuilder,
+      getMany: () => articles,
+    };
+
+    jest
+      .spyOn(mockArticlesRepository, 'createQueryBuilder')
+      .mockImplementation(() => createQueryBuilder);
+
+    const result = await service.list('en');
+    expect(result).toEqual(articles);
+  });
 });

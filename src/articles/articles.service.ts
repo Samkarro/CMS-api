@@ -7,8 +7,8 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Article } from './entities/articles.entity';
-import { Category } from 'src/categories/entities/categories.entity';
-import { AuthService } from 'src/auth/auth.service';
+import { Category } from '../categories/entities/categories.entity';
+import { AuthService } from '../auth/auth.service';
 import { I18nContext, I18nService } from 'nestjs-i18n';
 
 @Injectable()
@@ -23,7 +23,7 @@ export class ArticlesService {
     private readonly i18n: I18nService,
   ) {}
 
-  async list(): Promise<Article[]> {
+  async list(lang: string): Promise<Article[]> {
     const articleList = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -39,7 +39,7 @@ export class ArticlesService {
     if (!articleList) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NONE_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
