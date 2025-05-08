@@ -88,7 +88,7 @@ export class ArticlesService {
     return await this.articlesRepository.save(newArticle);
   }
 
-  async findById(id): Promise<Article> {
+  async findById(id, lang): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -105,19 +105,19 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NOT_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
     return article;
   }
 
-  async delete(id) {
+  async delete(id, lang) {
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NOT_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
