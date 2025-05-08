@@ -5,7 +5,7 @@ import { RegisterResponseDto } from 'src/common/dtos/register-response.dto';
 import { LoginResponseDto } from 'src/common/dtos/login-response.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { RegisterUserApiDto } from 'src/common/dtos/resources/categories/RegisterUserDto.dto';
+import { RegisterUserApiDto } from 'src/common/dtos/resources/users/RegisterUserDto.dto';
 import { LoginUserApiDto } from 'src/common/dtos/resources/users/LoginUserApiDto.dto';
 
 @Public()

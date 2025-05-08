@@ -1,35 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class updateArticleDto {
-  @ApiProperty({
-    example: 'Is Pineapple on Pizza Slowly Entering the Mainsteam?',
-    required: false,
-  })
-  @IsNotEmpty()
+export class UpdateArticleDto {
   title: string;
 
-  @ApiProperty({
-    example: {
-      email: 'romanceScience@gmail.com',
-      password: 'fnwebofg73297',
-    },
-    required: true,
-  })
+  @IsNotEmpty()
   user: {
     email: string;
     password: string;
   };
 
   @ApiProperty({
-    example: ['Politics', 'Lifestyle'],
+    example: ['Politics', 'Lifestyle', 'Mischief'],
     required: false,
   })
   categories: string[];
 
   @ApiProperty({
     example:
-      'Some people believe that pineapple on pizza is an abomination, but a growing population of new enthusiasts of Italian quisine would like to disagree',
+      'This post has been successfully vandalized by the anti-pinepple on pizza gang',
     required: false,
   })
   body: string;

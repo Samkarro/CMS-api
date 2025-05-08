@@ -13,7 +13,7 @@ import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
 import { Public } from 'src/common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { CreateArticleDto } from 'src/common/dtos/resources/articles/CreateArticleDto.dto';
-import { updateArticleDto } from 'src/common/dtos/resources/articles/UpdateArticleDto.dto';
+import { UpdateArticleDto } from 'src/common/dtos/resources/articles/UpdateArticleDto.dto';
 
 @Public()
 @Controller('articles')
@@ -23,7 +23,7 @@ export class ArticlesController {
   @Get()
   @ApiResponse({
     status: 200,
-    description: 'Lists all articles in the database.',
+    description: 'Listed all articles in the database.',
   })
   @ApiResponse({
     status: 404,
@@ -53,7 +53,7 @@ export class ArticlesController {
   @ApiBody({
     type: CreateArticleDto,
     description:
-      'Json body for article creation. Please not that the user passed should already exist and will be authenticated.',
+      "The article creation JSON has the title, the user's credentials (as we do not have a logged in state), the categories for the article and its body. Please note that the user passed should already exist (email should be in the database) and will be authenticated, password should be valid.",
   })
   @UseFilters(QueryExceptionFilter)
   async create(@Body() body) {
@@ -106,9 +106,9 @@ export class ArticlesController {
     description: 'Database query failed, passing user is required',
   })
   @ApiBody({
-    type: updateArticleDto,
+    type: UpdateArticleDto,
     description:
-      'Json body for article creation. Please not that the user passed should already exist and will be authenticated.',
+      'Updating an article always requires passing the user that made the article, all else is optional.',
   })
   @Patch(':id')
   @UseFilters(QueryExceptionFilter)
