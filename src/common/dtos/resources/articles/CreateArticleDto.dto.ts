@@ -16,6 +16,7 @@ export class CreateArticleDto {
     },
     required: true,
   })
+  @IsNotEmpty()
   user: {
     email: string;
     password: string;
@@ -32,5 +33,6 @@ export class CreateArticleDto {
       'Some people believe that pineapple on pizza is an abomination, but a growing population of new enthusiasts of Italian quisine would like to disagree',
     required: true,
   })
+  @IsNotEmpty()
   body: string;
 }

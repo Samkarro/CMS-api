@@ -9,7 +9,7 @@ import { CreateCategoryDto } from 'src/common/dtos/resources/categories/CreateCa
 export class CategoriesController {
   constructor(private categoriesService: CategoriesService) {}
 
-  @ApiResponse({ status: 200, description: 'Lists all existing categories.' })
+  @ApiResponse({ status: 200, description: 'Listed all existing categories.' })
   @ApiResponse({
     status: 404,
     description: 'Not found, no categories in database.',
@@ -30,14 +30,15 @@ export class CategoriesController {
   })
   @ApiBody({
     type: CreateCategoryDto,
-    description: 'Json structure for creating new category.',
+    description:
+      'Creating a category requires only the categoryName to be passed in the JSON, as the object only has that and the auto-incrementing id.',
   })
   @Post()
   async create(@Body('categoryName') categoryName: string) {
     return this.categoriesService.create(categoryName);
   }
 
-  @ApiResponse({ status: 200, description: 'Deletion successful' })
+  @ApiResponse({ status: 200, description: 'Deleted category with given id' })
   @ApiResponse({
     status: 404,
     description: "Not found, couldn't find category with given id in database",
