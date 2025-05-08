@@ -1,8 +1,8 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { CategoriesService } from './categories.service';
-import { Public } from 'src/common/decorators/public.decorator';
+import { Public } from '../common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { CreateCategoryApiDto } from 'src/common/dtos/resources/categories/swagger/CreateCategoryApiDto.dto';
+import { CreateCategoryApiDto } from '../common/dtos/resources/categories/swagger/CreateCategoryApiDto.dto';
 import { Category } from './entities/categories.entity';
 import { I18nLang } from 'nestjs-i18n';
 
