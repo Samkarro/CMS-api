@@ -32,7 +32,7 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    const newUser = await this.userRepository.create({
+    const newUser = this.userRepository.create({
       username: user.username,
       email: user.email,
       password: hashedPassword,
@@ -82,7 +82,7 @@ export class AuthService {
     return { access_token: this.jwtService.sign(payload) };
   }
 
-  async findOneByEmail(email): Promise<User> {
+  async findOneByEmail(email: string): Promise<User> {
     const user = await this.userRepository.findOneBy({ email });
     return user; // Returns no matter what to be handled outside of the method
   }

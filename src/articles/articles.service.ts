@@ -125,7 +125,11 @@ export class ArticlesService {
     this.articlesRepository.delete(id);
   }
 
-  async update(body: CreateArticleDto, id, lang): Promise<Article> {
+  async update(
+    body: CreateArticleDto,
+    id: number,
+    lang: string,
+  ): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -200,8 +204,8 @@ export class ArticlesService {
         body: body.body || article.body,
       });
 
-      await this.articlesRepository.save(updatedArticle);
-      return await await this.articlesRepository
+      this.articlesRepository.save(updatedArticle);
+      return await this.articlesRepository
         .createQueryBuilder('article')
         .leftJoinAndSelect('article.categories', 'category')
         .leftJoinAndSelect('article.author', 'user')
@@ -224,8 +228,8 @@ export class ArticlesService {
       body: body.body || article.body,
     });
 
-    await this.articlesRepository.save(updatedArticle);
-    return await await this.articlesRepository
+    this.articlesRepository.save(updatedArticle);
+    return await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
       .leftJoinAndSelect('article.author', 'user')
