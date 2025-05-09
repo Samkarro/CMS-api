@@ -32,14 +32,20 @@ export class AuthService {
     }
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
-    const newUser = this.userRepository.create({
+    const newUser = await this.userRepository.create({
       username: user.username,
       email: user.email,
       password: hashedPassword,
     });
 
     await this.userRepository.save(newUser);
-    return this.login(newUser, lang);
+    return await this.login(
+      {
+        email: user.email,
+        password: user.password,
+      } as User,
+      lang,
+    );
   }
 
   async validateUser(
