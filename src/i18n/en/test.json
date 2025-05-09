@@ -17,7 +17,8 @@
     "NOT_FOUND": "Article with given id not found",
     "USER_NOT_FOUND": "Passed user not found",
     "UNAUTHORIZED": "User not specified",
-    "CANNOT_EDIT_USER": "Cannot edit user"
+    "CANNOT_EDIT_USER": "Cannot edit user",
+    "NO_CATEGORIES": "Cannot edit article without passing categories"
   },
   "FILTERS": {
     "QUERIES": {

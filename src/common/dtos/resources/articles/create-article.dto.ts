@@ -1,4 +1,4 @@
-export type CreateArticleDto = {
+export class CreateArticleDto {
   title: string;
   author: {
     email: string;
@@ -6,4 +6,4 @@ export type CreateArticleDto = {
   };
   categories: [string];
   body: string;
-};
+}

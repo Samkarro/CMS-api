@@ -9,12 +9,13 @@ import {
   UseFilters,
 } from '@nestjs/common';
 import { ArticlesService } from './articles.service';
-import { QueryExceptionFilter } from 'src/common/exceptions/queries.exception';
-import { Public } from 'src/common/decorators/public.decorator';
+import { QueryExceptionFilter } from '../common/exceptions/queries.exception';
+import { Public } from '../common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
-import { CreateArticleApiDto } from 'src/common/dtos/resources/articles/swagger/CreateArticleDto.dto';
-import { UpdateArticleDto } from 'src/common/dtos/resources/articles/swagger/UpdateArticleDto.dto';
+import { CreateArticleApiDto } from '../common/dtos/resources/articles/swagger/CreateArticleDto.dto';
+import { UpdateArticleApiDto } from '../common/dtos/resources/articles/swagger/UpdateArticleDto.dto';
 import { I18nLang } from 'nestjs-i18n';
+import { CreateArticleDto } from '../common/dtos/resources/articles/create-article.dto';
 
 @Public()
 @Controller('articles')
@@ -57,10 +58,10 @@ export class ArticlesController {
       "The article creation JSON has the title, the user's credentials (as we do not have a logged in state), the categories for the article and its body. Please note that the user passed should already exist (email should be in the database) and will be authenticated, password should be valid.",
   })
   @UseFilters(QueryExceptionFilter)
-  async create(@Body() body, @I18nLang() lang: string) {
+  async create(@Body() body: CreateArticleDto, @I18nLang() lang: string) {
     return await this.articlesService.create(
       body.title,
-      body.user,
+      body.author,
       body.categories,
       body.body,
       lang,
@@ -93,7 +94,8 @@ export class ArticlesController {
   })
   @ApiResponse({
     status: 401,
-    description: "Unauthorised. Passed user's password is incorrect.",
+    description:
+      "Unauthorised. User isn't passed or passed user's password is incorrect.",
   })
   @ApiResponse({
     status: 404,
@@ -103,19 +105,15 @@ export class ArticlesController {
     status: 403,
     description: 'Forbidden. Cannot change author of article',
   })
-  @ApiResponse({
-    status: 500,
-    description: 'Database query failed, passing user is required',
-  })
   @ApiBody({
-    type: UpdateArticleDto,
+    type: UpdateArticleApiDto,
     description:
-      'Updating an article always requires passing the user that made the article, all else is optional.',
+      'Updating an article always requires passing the user that made the article and categories (new or otherwise), all else is optional.',
   })
   @Patch(':id')
   @UseFilters(QueryExceptionFilter)
   async update(
-    @Body() body,
+    @Body() body: CreateArticleDto,
     @Param('id') id: number,
     @I18nLang() lang: string,
   ): Promise<any> {

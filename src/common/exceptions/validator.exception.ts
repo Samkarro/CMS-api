@@ -6,7 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nService } from 'nestjs-i18n';
 
 @Catch(BadRequestException)
 export class ValidationExceptionFilter implements ExceptionFilter {
@@ -34,15 +34,17 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       }
     }
 
+    const lang = req.headers['accept-language'] || 'en';
+
     res.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: req.url,
       error: this.i18n.t('test.FILTERS.BAD_REQUEST.ERROR', {
-        lang: I18nContext.current().lang,
+        lang,
       }),
       message: this.i18n.t('test.FILTERS.BAD_REQUEST.MESSAGE', {
-        lang: I18nContext.current().lang,
+        lang,
       }),
       details: validationErrors,
     });

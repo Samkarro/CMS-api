@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -9,7 +10,8 @@ import { Repository } from 'typeorm';
 import { Article } from './entities/articles.entity';
 import { Category } from '../categories/entities/categories.entity';
 import { AuthService } from '../auth/auth.service';
-import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nService } from 'nestjs-i18n';
+import { UpdateArticleDto } from '../common/dtos/resources/articles/update-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -53,7 +55,7 @@ export class ArticlesService {
       password: string;
     },
     categoryNames: string[],
-    body,
+    body: string,
     lang: string,
   ): Promise<Article> {
     const articleCategories: Category[] = [];
@@ -88,7 +90,7 @@ export class ArticlesService {
     return await this.articlesRepository.save(newArticle);
   }
 
-  async findById(id, lang): Promise<Article> {
+  async findById(id: number, lang: string): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -112,7 +114,7 @@ export class ArticlesService {
     return article;
   }
 
-  async delete(id, lang) {
+  async delete(id: number, lang: string) {
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
       throw new NotFoundException(
@@ -124,7 +126,11 @@ export class ArticlesService {
     this.articlesRepository.delete(id);
   }
 
-  async update(body, id, lang): Promise<Article> {
+  async update(
+    body: UpdateArticleDto,
+    id: number,
+    lang: string,
+  ): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -144,6 +150,13 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NOT_FOUND', {
+          lang,
+        }),
+      );
+    }
+    if (!body.categories) {
+      throw new BadRequestException(
+        this.i18n.t('test.ARTICLE.NO_CATEGORIES', {
           lang,
         }),
       );
@@ -170,28 +183,69 @@ export class ArticlesService {
         }),
       );
     }
+    const newCategories: Category[] = [];
+
     this.authService.validateUser(
       body.author.email,
       body.author.password,
       lang,
     );
 
+    if (body.categories) {
+      for (const name of body.categories) {
+        let category = await this.categoriesRepository.findOneBy({
+          categoryName: name,
+        });
+
+        if (!category) {
+          category = this.categoriesRepository.create({ categoryName: name });
+          await this.categoriesRepository.save(category);
+        }
+
+        newCategories.push(category);
+      }
+      const updatedArticle = this.articlesRepository.create({
+        id: article.id,
+        title: body.title || article.title,
+        author: user,
+        categories: newCategories,
+        body: body.body || article.body,
+      });
+
+      this.articlesRepository.save(updatedArticle);
+      return await this.articlesRepository
+        .createQueryBuilder('article')
+        .leftJoinAndSelect('article.categories', 'category')
+        .leftJoinAndSelect('article.author', 'user')
+        .select([
+          'article.id',
+          'article.title',
+          'article.body',
+          'user.username',
+          'category.categoryName',
+        ])
+        .where('article.id = :id', { id })
+        .getOne();
+    }
+
     const updatedArticle = this.articlesRepository.create({
-      ...article,
-      ...body,
+      id: article.id,
+      title: body.title || article.title,
       author: user,
+      categories: article.categories,
+      body: body.body || article.body,
     });
 
-    await this.articlesRepository.save(updatedArticle);
-    return await await this.articlesRepository
+    this.articlesRepository.save(updatedArticle);
+    return await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
       .leftJoinAndSelect('article.author', 'user')
       .select([
         'article.id',
         'article.title',
-        'article.body',
         'user.username',
+        'article.body',
         'category.categoryName',
       ])
       .where('article.id = :id', { id })
