@@ -9,7 +9,8 @@ import { Repository } from 'typeorm';
 import { Article } from './entities/articles.entity';
 import { Category } from '../categories/entities/categories.entity';
 import { AuthService } from '../auth/auth.service';
-import { I18nContext, I18nService } from 'nestjs-i18n';
+import { I18nService } from 'nestjs-i18n';
+import { CreateArticleDto } from 'src/common/dtos/resources/articles/create-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -53,7 +54,7 @@ export class ArticlesService {
       password: string;
     },
     categoryNames: string[],
-    body,
+    body: string,
     lang: string,
   ): Promise<Article> {
     const articleCategories: Category[] = [];
@@ -88,7 +89,7 @@ export class ArticlesService {
     return await this.articlesRepository.save(newArticle);
   }
 
-  async findById(id, lang): Promise<Article> {
+  async findById(id: number, lang: string): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -112,7 +113,7 @@ export class ArticlesService {
     return article;
   }
 
-  async delete(id, lang) {
+  async delete(id: number, lang: string) {
     const article = await this.articlesRepository.findOneBy({ id });
     if (!article) {
       throw new NotFoundException(
@@ -124,7 +125,7 @@ export class ArticlesService {
     this.articlesRepository.delete(id);
   }
 
-  async update(body, id, lang): Promise<Article> {
+  async update(body: CreateArticleDto, id, lang): Promise<Article> {
     const article = await this.articlesRepository
       .createQueryBuilder('article')
       .leftJoinAndSelect('article.categories', 'category')
@@ -177,9 +178,10 @@ export class ArticlesService {
     );
 
     const updatedArticle = this.articlesRepository.create({
-      ...article,
-      ...body,
+      id: article.id,
+      title: body.title || article.title,
       author: user,
+      body: body.body || article.body,
     });
 
     await this.articlesRepository.save(updatedArticle);

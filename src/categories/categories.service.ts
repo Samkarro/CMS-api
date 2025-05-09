@@ -33,7 +33,7 @@ export class CategoriesService {
     const category = await this.categoriesRepository.findOneBy({ id });
     if (!category) {
       throw new NotFoundException(
-        this.i18n.t('test.CATEGORY.NOT_FOUND  ', {
+        this.i18n.t('test.CATEGORY.NOT_FOUND', {
           lang,
         }),
       );
