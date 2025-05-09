@@ -75,7 +75,7 @@ describe('AuthService', () => {
 
     const fakeToken = 'fake-jwt-token';
     jest.spyOn(mockJwtService, 'sign').mockReturnValue(fakeToken);
-
+    jest.spyOn(service, 'login').mockResolvedValue({ access_token: fakeToken });
     // Act
     const result = await service.register(registerRequestDto, 'en');
 
@@ -87,6 +87,7 @@ describe('AuthService', () => {
       email: registerRequestDto.email,
       password: user.password,
     });
+    expect(service.login).toHaveBeenCalled();
     expect(result).toEqual({ access_token: fakeToken });
   });
 
@@ -102,16 +103,22 @@ describe('AuthService', () => {
       email: 'serpentsfvng@gmail.com',
       password: await bcrypt.hash(loginRequest.password, 10),
     } as User;
+    const fakeToken = 'fake-jwt-token';
 
-    jest.spyOn(mockUserRepository, 'findOneBy').mockReturnValue(user);
+    jest.spyOn(service, 'validateUser').mockResolvedValue(user);
+    jest.spyOn(mockJwtService, 'sign').mockReturnValue(fakeToken);
 
     // Act
-    await service.login(loginRequest, 'en');
+    const result = await service.login(loginRequest, 'en');
 
     // Assert
-    expect(mockUserRepository.findOneBy).toHaveBeenCalled();
-    expect(mockUserRepository.findOneBy).toHaveBeenCalledWith({
-      email: 'serpentsfvng@gmail.com',
-    });
+    expect(service.validateUser).toHaveBeenCalledWith(
+      loginRequest.email,
+      loginRequest.password,
+      'en',
+    );
+    expect(mockJwtService.sign).toHaveBeenCalled();
+
+    expect(result).toEqual({ access_token: fakeToken });
   });
 });

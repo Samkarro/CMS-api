@@ -11,6 +11,7 @@ import { Category } from '../categories/entities/categories.entity';
 import { AuthService } from '../auth/auth.service';
 import { I18nService } from 'nestjs-i18n';
 import { CreateArticleDto } from 'src/common/dtos/resources/articles/create-article.dto';
+import { UpdateArticleDto } from 'src/common/dtos/resources/articles/swagger/update-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -126,7 +127,7 @@ export class ArticlesService {
   }
 
   async update(
-    body: CreateArticleDto,
+    body: UpdateArticleDto,
     id: number,
     lang: string,
   ): Promise<Article> {
@@ -236,8 +237,8 @@ export class ArticlesService {
       .select([
         'article.id',
         'article.title',
-        'article.body',
         'user.username',
+        'article.body',
         'category.categoryName',
       ])
       .where('article.id = :id', { id })

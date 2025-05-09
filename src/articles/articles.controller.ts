@@ -13,7 +13,7 @@ import { QueryExceptionFilter } from '../common/exceptions/queries.exception';
 import { Public } from '../common/decorators/public.decorator';
 import { ApiBody, ApiResponse } from '@nestjs/swagger';
 import { CreateArticleApiDto } from '../common/dtos/resources/articles/swagger/CreateArticleDto.dto';
-import { UpdateArticleDto } from '../common/dtos/resources/articles/swagger/UpdateArticleDto.dto';
+import { UpdateArticleApiDto } from '../common/dtos/resources/articles/swagger/UpdateArticleDto.dto';
 import { I18nLang } from 'nestjs-i18n';
 import { CreateArticleDto } from '../common/dtos/resources/articles/create-article.dto';
 
@@ -109,7 +109,7 @@ export class ArticlesController {
     description: 'Database query failed, passing user is required',
   })
   @ApiBody({
-    type: UpdateArticleDto,
+    type: UpdateArticleApiDto,
     description:
       'Updating an article always requires passing the user that made the article, all else is optional.',
   })

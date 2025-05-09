@@ -4,6 +4,7 @@ import { RegisterRequestDto } from '../common/dtos/register-request.dto';
 import { User } from '../users/entities/users.entity';
 import * as bcrypt from 'bcryptjs';
 import { AuthService } from '../auth/auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 describe('UsersController', () => {
   let controller: UsersController;
@@ -13,6 +14,9 @@ describe('UsersController', () => {
     validateUser: jest.fn(),
     findOneByEmail: jest.fn(),
   };
+  const mockJwtService = {
+    sign: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -21,6 +25,10 @@ describe('UsersController', () => {
         {
           provide: AuthService,
           useValue: mockAuthService,
+        },
+        {
+          provide: JwtService,
+          useValue: mockJwtService,
         },
       ],
     }).compile();
@@ -48,19 +56,16 @@ describe('UsersController', () => {
     } as User;
 
     jest.spyOn(mockAuthService, 'register').mockReturnValue(user);
-
     // Act
-    await mockAuthService.register(registerRequestDto, 'en');
+    const result = await mockAuthService.register(registerRequestDto, 'en');
 
     // Assert
     expect(mockAuthService.register).toHaveBeenCalled();
     expect(mockAuthService.register).toHaveBeenCalledWith(
-      registerRequestDto.username,
-      registerRequestDto.email,
-      user.password, // TODO: Do test for jwt once ur done with the issue
+      registerRequestDto,
+      'en',
     );
   });
-
   it('login => Should validate user credentials and return jwt token', async () => {
     // Arrange
     const loginRequest = {

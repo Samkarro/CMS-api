@@ -6,6 +6,7 @@ import { Category } from '../categories/entities/categories.entity';
 import { I18nService } from 'nestjs-i18n';
 import { AuthService } from '../auth/auth.service';
 import { CreateArticleDto } from '../common/dtos/resources/articles/create-article.dto';
+import * as bcrypt from 'bcrypt';
 
 describe('ArticlesService', () => {
   let service: ArticlesService;
@@ -159,7 +160,7 @@ describe('ArticlesService', () => {
       body: 'This is an article. Never ever to be forgotten, or so it seems. Perchance.',
     };
 
-    jest.spyOn(mockArticlesRepository, 'delete').mockReturnValue(article);
+    jest.spyOn(mockArticlesRepository, 'findOneBy').mockReturnValue(article);
 
     // Act
     await service.delete(id, 'en');
@@ -177,7 +178,7 @@ describe('ArticlesService', () => {
       author: {
         username: 'John Marinade',
       },
-      categories: ['Politics'],
+      categories: [{ id: 1, categoryName: 'Politics' }],
       body: 'Thorough description of why some consider it an abomination',
     };
     const createQueryBuilder: any = {
@@ -200,35 +201,72 @@ describe('ArticlesService', () => {
     const body = {
       title: 'First Article of the Decade 3',
       author: {
-        email: 'email',
+        email: 'email@gmail.com',
         password: 'passwrrdtest',
       },
     };
 
     const article = {
       id: 7,
-      title: 'Pineapple on Pizza',
-      author: {
+      title: 'First Article of the Decade 3',
+      user: {
         username: 'John Marinade',
       },
-      categories: ['Politics'],
+      categories: [
+        {
+          id: 1,
+          categoryName: 'Fantasy',
+        },
+      ],
       body: 'Thorough description of why some consider it an abomination',
     };
 
-    const createQueryBuilder: any = {
-      select: () => createQueryBuilder,
-      leftJoinAndSelect: () => createQueryBuilder,
+    const returnedArticleMock = {
+      id: 7,
+      title: 'Pineapple on Pizza',
+      author: {
+        id: 2,
+        username: 'John Marinade',
+        email: 'email@gmail.com',
+        password: await bcrypt.hash(body.author.password, 10),
+      },
+      categories: [
+        {
+          id: 1,
+          categoryName: 'Fantasy',
+        },
+      ],
+      body: 'Thorough description of why some consider it an abomination.',
+    };
+
+    const user = {
+      email: body.author.email,
+      password: bcrypt.hash(body.author.password, 10),
+    };
+
+    const createQueryBuilderFirst: any = {
+      select: () => createQueryBuilderFirst,
+      leftJoinAndSelect: () => createQueryBuilderFirst,
+      getOne: () => returnedArticleMock,
+      where: () => createQueryBuilderFirst,
+    };
+    const createQueryBuilderSecond: any = {
+      select: () => createQueryBuilderSecond,
+      leftJoinAndSelect: () => createQueryBuilderSecond,
       getOne: () => article,
-      where: () => createQueryBuilder,
+      where: () => createQueryBuilderSecond,
     };
 
     jest
       .spyOn(mockArticlesRepository, 'createQueryBuilder')
-      .mockImplementation(() => createQueryBuilder);
+      .mockImplementationOnce(() => createQueryBuilderFirst)
+      .mockImplementationOnce(() => createQueryBuilderSecond);
+    jest.spyOn(mockAuthService, 'findOneByEmail').mockReturnValue(user);
 
-    const result = await service;
+    const result = await service.update(body, id, 'en');
 
     expect(mockArticlesRepository.createQueryBuilder).toHaveBeenCalled();
     expect(mockArticlesRepository.save).toHaveBeenCalled();
+    expect(result).toEqual(article);
   });
 });
