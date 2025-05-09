@@ -57,7 +57,7 @@ describe('UsersController', () => {
 
     jest.spyOn(mockAuthService, 'register').mockReturnValue(user);
     // Act
-    const result = await mockAuthService.register(registerRequestDto, 'en');
+    await mockAuthService.register(registerRequestDto, 'en');
 
     // Assert
     expect(mockAuthService.register).toHaveBeenCalled();
