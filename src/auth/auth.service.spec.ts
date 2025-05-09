@@ -65,18 +65,29 @@ describe('AuthService', () => {
       password: await bcrypt.hash(registerRequestDto.password, 10),
     } as User;
 
+    jest
+      .spyOn(service, 'findOneByEmail')
+      .mockResolvedValueOnce(null)
+      .mockResolvedValueOnce(user);
+
     jest.spyOn(mockUserRepository, 'create').mockReturnValue(user);
+    jest.spyOn(mockUserRepository, 'save').mockResolvedValue(user);
+
+    const fakeToken = 'fake-jwt-token';
+    jest.spyOn(mockJwtService, 'sign').mockReturnValue(fakeToken);
 
     // Act
-    await service.register(registerRequestDto, 'en');
+    const result = await service.register(registerRequestDto, 'en');
 
     // Assert
     expect(mockUserRepository.save).toHaveBeenCalled();
-    expect(mockUserRepository.save).toHaveBeenCalledWith(
-      registerRequestDto.username,
-      registerRequestDto.email,
-      user.password, // TODO: Do test for jwt once ur done with the issue
-    );
+    expect(mockUserRepository.save).toHaveBeenCalledWith({
+      id: user.id,
+      username: registerRequestDto.username,
+      email: registerRequestDto.email,
+      password: user.password,
+    });
+    expect(result).toEqual({ access_token: fakeToken });
   });
 
   it('login => Should validate user credentials and return jwt token', async () => {

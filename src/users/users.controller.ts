@@ -1,4 +1,11 @@
-import { Body, Controller, Post, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Post,
+  Request,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { RegisterRequestDto } from '../common/dtos/register-request.dto';
 import { RegisterResponseDto } from '../common/dtos/register-response.dto';
@@ -29,6 +36,7 @@ export class UsersController {
     description:
       'Registering a user requires all the same things. A unique username, unique email and a password with at least 6 and at most 50 characters.',
   })
+  @UsePipes(new ValidationPipe({ whitelist: true, forbidNonWhitelisted: true }))
   async register(
     @Body() registerBody: RegisterRequestDto,
     @I18nLang() lang: string,
