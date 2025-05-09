@@ -134,6 +134,7 @@ export class ArticlesService {
         'article.title',
         'article.body',
         'user.username',
+        'user.email',
         'user.password',
         'category.categoryName',
       ])
@@ -143,33 +144,37 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NOT_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
-    if (!body.user) {
+    if (!body.author) {
       throw new UnauthorizedException(
         this.i18n.t('test.ARTICLE.UNAUTHORIZED', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
-    const user = await this.authService.findOneByEmail(body.user.email);
+    const user = await this.authService.findOneByEmail(body.author.email);
     if (!user) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.USER_NOT_FOUND', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
-    if (body.user.email !== user.email) {
+    if (body.author.email !== article.author.email) {
       throw new ForbiddenException(
         this.i18n.t('test.ARTICLE.CANNOT_EDIT_USER', {
-          lang: I18nContext.current().lang,
+          lang,
         }),
       );
     }
-    this.authService.validateUser(body.user.email, body.user.password, lang);
+    this.authService.validateUser(
+      body.author.email,
+      body.author.password,
+      lang,
+    );
 
     const updatedArticle = this.articlesRepository.create({
       ...article,
