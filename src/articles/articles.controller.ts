@@ -94,7 +94,8 @@ export class ArticlesController {
   })
   @ApiResponse({
     status: 401,
-    description: "Unauthorised. Passed user's password is incorrect.",
+    description:
+      "Unauthorised. User isn't passed or passed user's password is incorrect.",
   })
   @ApiResponse({
     status: 404,
@@ -104,14 +105,10 @@ export class ArticlesController {
     status: 403,
     description: 'Forbidden. Cannot change author of article',
   })
-  @ApiResponse({
-    status: 500,
-    description: 'Database query failed, passing user is required',
-  })
   @ApiBody({
     type: UpdateArticleApiDto,
     description:
-      'Updating an article always requires passing the user that made the article, all else is optional.',
+      'Updating an article always requires passing the user that made the article and categories (new or otherwise), all else is optional.',
   })
   @Patch(':id')
   @UseFilters(QueryExceptionFilter)

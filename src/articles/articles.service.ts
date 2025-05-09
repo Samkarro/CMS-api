@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -10,7 +11,7 @@ import { Article } from './entities/articles.entity';
 import { Category } from '../categories/entities/categories.entity';
 import { AuthService } from '../auth/auth.service';
 import { I18nService } from 'nestjs-i18n';
-import { UpdateArticleDto } from '../common/dtos/resources/articles/swagger/update-article.dto';
+import { UpdateArticleDto } from '../common/dtos/resources/articles/update-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -149,6 +150,13 @@ export class ArticlesService {
     if (!article) {
       throw new NotFoundException(
         this.i18n.t('test.ARTICLE.NOT_FOUND', {
+          lang,
+        }),
+      );
+    }
+    if (!body.categories) {
+      throw new BadRequestException(
+        this.i18n.t('test.ARTICLE.NO_CATEGORIES', {
           lang,
         }),
       );

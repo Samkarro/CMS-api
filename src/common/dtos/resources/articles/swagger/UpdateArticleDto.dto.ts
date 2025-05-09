@@ -5,11 +5,18 @@ export class UpdateArticleApiDto {
   title: string;
 
   @IsNotEmpty()
-  user: {
+  @ApiProperty({
+    example: {
+      email: 'romanceScience@gmail.com',
+      password: 'fnwebofg73297',
+    },
+  })
+  author: {
     email: string;
     password: string;
   };
 
+  @IsNotEmpty()
   @ApiProperty({
     example: ['Politics', 'Lifestyle', 'Mischief'],
     required: false,

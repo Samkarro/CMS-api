@@ -34,15 +34,17 @@ export class ValidationExceptionFilter implements ExceptionFilter {
       }
     }
 
+    const lang = req.headers['accept-language'] || 'en';
+
     res.status(status).json({
       statusCode: status,
       timestamp: new Date().toISOString(),
       path: req.url,
       error: this.i18n.t('test.FILTERS.BAD_REQUEST.ERROR', {
-        lang: I18nContext.current().lang,
+        lang,
       }),
       message: this.i18n.t('test.FILTERS.BAD_REQUEST.MESSAGE', {
-        lang: I18nContext.current().lang,
+        lang,
       }),
       details: validationErrors,
     });
