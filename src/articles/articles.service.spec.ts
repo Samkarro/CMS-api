@@ -6,7 +6,7 @@ import { Category } from '../categories/entities/categories.entity';
 import { I18nService } from 'nestjs-i18n';
 import { AuthService } from '../auth/auth.service';
 import { CreateArticleDto } from '../common/dtos/resources/articles/create-article.dto';
-import * as bcrypt from 'bcrypt';
+import * as bcryptjs from 'bcryptjs';
 
 describe('ArticlesService', () => {
   let service: ArticlesService;
@@ -228,7 +228,7 @@ describe('ArticlesService', () => {
         id: 2,
         username: 'John Marinade',
         email: 'email@gmail.com',
-        password: await bcrypt.hash(body.author.password, 10),
+        password: await bcryptjs.hash(body.author.password, 10),
       },
       categories: [
         {
@@ -241,7 +241,7 @@ describe('ArticlesService', () => {
 
     const user = {
       email: body.author.email,
-      password: bcrypt.hash(body.author.password, 10),
+      password: bcryptjs.hash(body.author.password, 10),
     };
 
     const createQueryBuilderFirst: any = {

@@ -10,8 +10,7 @@ import { Article } from './entities/articles.entity';
 import { Category } from '../categories/entities/categories.entity';
 import { AuthService } from '../auth/auth.service';
 import { I18nService } from 'nestjs-i18n';
-import { CreateArticleDto } from 'src/common/dtos/resources/articles/create-article.dto';
-import { UpdateArticleDto } from 'src/common/dtos/resources/articles/swagger/update-article.dto';
+import { UpdateArticleDto } from '../common/dtos/resources/articles/swagger/update-article.dto';
 
 @Injectable()
 export class ArticlesService {

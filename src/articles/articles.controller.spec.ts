@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ArticlesController } from './articles.controller';
 import { ArticlesService } from './articles.service';
 import { I18nService } from 'nestjs-i18n';
-import { CreateArticleDto } from 'src/common/dtos/resources/articles/create-article.dto';
+import { CreateArticleDto } from '../common/dtos/resources/articles/create-article.dto';
 import { Article } from './entities/articles.entity';
 
 describe('ArticlesController', () => {
