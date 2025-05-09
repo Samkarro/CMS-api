@@ -171,16 +171,56 @@ export class ArticlesService {
         }),
       );
     }
+    const newCategories: Category[] = [];
+
     this.authService.validateUser(
       body.author.email,
       body.author.password,
       lang,
     );
 
+    if (body.categories) {
+      for (const name of body.categories) {
+        let category = await this.categoriesRepository.findOneBy({
+          categoryName: name,
+        });
+
+        if (!category) {
+          category = this.categoriesRepository.create({ categoryName: name });
+          await this.categoriesRepository.save(category);
+        }
+
+        newCategories.push(category);
+      }
+      const updatedArticle = this.articlesRepository.create({
+        id: article.id,
+        title: body.title || article.title,
+        author: user,
+        categories: newCategories,
+        body: body.body || article.body,
+      });
+
+      await this.articlesRepository.save(updatedArticle);
+      return await await this.articlesRepository
+        .createQueryBuilder('article')
+        .leftJoinAndSelect('article.categories', 'category')
+        .leftJoinAndSelect('article.author', 'user')
+        .select([
+          'article.id',
+          'article.title',
+          'article.body',
+          'user.username',
+          'category.categoryName',
+        ])
+        .where('article.id = :id', { id })
+        .getOne();
+    }
+
     const updatedArticle = this.articlesRepository.create({
       id: article.id,
       title: body.title || article.title,
       author: user,
+      categories: article.categories,
       body: body.body || article.body,
     });
 
